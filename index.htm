@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SECOP Lite - Contratación Pública de Colombia</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-container">
+                <div class="logo">
+                    <span class="material-symbols-outlined">gavel</span>
+                    <h1>SECOP <span class="highlight">Lite</span></h1>
+                </div>
+                <p class="subtitle">Consulta el Sistema de Compra Pública Colombiana</p>
+            </div>
+        </header>
+
+        <!-- Barra de búsqueda principal -->
+        <main class="main">
+            <!-- Pestañas de navegación -->
+            <div class="tabs">
+                <button id="tabSearchBtn" class="tab active">🔍 Búsqueda</button>
+                <button id="tabFavoritesBtn" class="tab">⭐ Favoritos</button>
+            </div>
+
+            <!-- Contenido de búsqueda -->
+            <div id="searchContent">
+                <div class="search-section">
+                    <div class="search-box">
+                        <span class="material-symbols-outlined search-icon">search</span>
+                        <input type="text" id="searchInput" placeholder="Ej: licitaciones de TI, contratos de alimentación escolar..." class="search-input">
+                        <button id="searchBtn" class="search-btn">Buscar</button>
+                    </div>
+                    
+                    <div class="filter-toggle">
+                        <button id="toggleFiltersBtn" class="toggle-filters-btn">
+                            <span class="material-symbols-outlined">filter_list</span>
+                            Mostrar filtros
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Panel de filtros -->
+                <div id="filtersPanel" class="filters-panel hidden">
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label>Departamento</label>
+                            <select id="departmentFilter">
+                                <option value="">Todos los departamentos</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Ciudad</label>
+                            <select id="cityFilter" disabled>
+                                <option value="">Todas las ciudades</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Entidad</label>
+                            <input type="text" id="entityFilter" placeholder="Nombre de entidad">
+                        </div>
+                        <div class="filter-group">
+                            <label>Modalidad</label>
+                            <select id="modalityFilter">
+                                <option value="">Todas las modalidades</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Estado</label>
+                            <select id="statusFilter">
+                                <option value="">Todos los estados</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Fecha desde</label>
+                            <input type="date" id="fromDateFilter">
+                        </div>
+                        <div class="filter-group">
+                            <label>Fecha hasta</label>
+                            <input type="date" id="toDateFilter">
+                        </div>
+                        <div class="filter-group">
+                            <label>Valor mínimo (COP)</label>
+                            <input type="number" id="minValueFilter" placeholder="0">
+                        </div>
+                        <div class="filter-group">
+                            <label>Valor máximo (COP)</label>
+                            <input type="number" id="maxValueFilter" placeholder="0">
+                        </div>
+                    </div>
+                    <div class="filters-actions">
+                        <button id="applyFiltersBtn" class="apply-filters-btn">Aplicar filtros</button>
+                        <button id="clearFiltersBtn" class="clear-filters-btn">Limpiar filtros</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resultados -->
+            <div class="results-section">
+                <div class="results-header">
+                    <h2 id="resultsTitle">Procesos de Contratación</h2>
+                    <div id="resultsCount" class="results-count">0 procesos encontrados</div>
+                </div>
+
+                <!-- Tabla de resultados -->
+                <div class="table-container">
+                    <table id="resultsTable" class="results-table">
+                        <thead>
+                            <tr>
+                                <th>ID / Entidad</th>
+                                <th>Título</th>
+                                <th>Cuantía</th>
+                                <th>Estado</th>
+                                <th>Publicación</th>
+                                <th>Código UNSPSC</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr>
+                                <td colspan="7" class="empty-state">Realiza una búsqueda para ver resultados</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginación -->
+                <div id="pagination" class="pagination"></div>
+            </div>
+
+            <!-- Sección de gráficos -->
+            <div id="chartsContainer" class="charts-section">
+                <div class="chart-card">
+                    <h3>📊 Procesos por Modalidad</h3>
+                    <canvas id="modalityChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Datos de SECOP II - Colombia Compra Eficiente</p>
+        </footer>
+    </div>
+
+    <!-- Indicador de carga -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <p>Cargando datos...</p>
+    </div>
+
+    <!-- Modal de detalles del proceso -->
+    <div id="processModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📋 Detalles del Proceso</h2>
+                <button id="closeModalBtn" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Contenido dinámico cargado por JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button id="modalCloseFooterBtn" class="modal-footer-btn">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
