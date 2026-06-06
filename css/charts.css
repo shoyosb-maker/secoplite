@@ -1,0 +1,27 @@
+/* ============================================
+   GRÁFICOS
+   ============================================ */
+
+.charts-section {
+    margin-top: 1.5rem;
+}
+
+.chart-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200);
+}
+
+.chart-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.chart-card canvas {
+    max-height: 250px;
+    width: 100%;
+}

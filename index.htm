@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>SECOP Lite - Contratación Pública de Colombia</title>
+    
+    <!-- ========== ESTILOS MODULARES PROPIOS (para la app principal) ========== -->
+    <link rel="stylesheet" href="css/main.css">
+    
+    <!-- ========== TAILWIND SOLO PARA EL LOGIN ========== -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    
+    <!-- ========== CHART.JS ========== -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <style>
+        /* Estilos SOLO para el login-screen */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            overflow: hidden;
+        }
+        
+        .login-screen .glass-panel {
+            background: rgba(23, 31, 51, 0.4);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            width: 100%;
+            max-width: 420px;
+        }
+        
+        .login-screen .input-group {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        .login-screen .input-group input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            background: rgba(6, 14, 32, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            color: white;
+            font-size: 0.875rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .login-screen .input-group input:focus {
+            border-color: #ddb7ff;
+            box-shadow: 0 0 15px rgba(221, 183, 255, 0.3);
+        }
+        
+        .login-screen .input-group .input-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #988d9f;
+            font-size: 1.25rem;
+        }
+        
+        .login-screen .input-group .password-toggle {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #988d9f;
+            cursor: pointer;
+            font-size: 1.25rem;
+        }
+        
+        .login-screen .login-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #b76dff, #0566d9);
+            color: white;
+            font-weight: 700;
+            border-radius: 0.75rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .login-screen .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(183, 109, 255, 0.4);
+        }
+        
+        .login-screen .login-brand {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .login-screen .login-icon-wrapper {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            margin-bottom: 1rem;
+        }
+        
+        .login-screen .login-icon {
+            font-size: 3rem;
+            color: #10b981;
+        }
+        
+        .login-screen .login-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .login-screen .login-title .highlight {
+            background: linear-gradient(135deg, #10b981, #059669);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .login-screen .login-description {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .login-screen .login-footer {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .login-screen .login-footer p {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 0.25rem;
+        }
+        
+        .login-screen .login-footer small {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .login-screen.hidden {
+            display: none;
+        }
+        
+        .main-app.hidden {
+            display: none;
+        }
+        
+        /* ============================================ */
+        /* ANIMACIONES FLOTANTES - TAMAÑOS AUMENTADOS */
+        /* ============================================ */
+        
+        .floating-1 {
+            position: absolute;
+            width: 200px;
+            animation: floatAcross1 18s ease-in-out infinite;
+        }
+        
+        .floating-2 {
+            position: absolute;
+            width: 170px;
+            animation: floatAcross2 22s ease-in-out infinite;
+        }
+        
+        .floating-3 {
+            position: absolute;
+            width: 140px;
+            animation: floatAcross3 25s ease-in-out infinite;
+        }
+        
+        /* Imagen 1: Recorre de esquina superior izquierda a inferior derecha */
+        @keyframes floatAcross1 {
+            0% {
+                top: -5%;
+                left: -5%;
+                transform: rotate(0deg) scale(1);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            25% {
+                top: 20%;
+                left: 15%;
+                transform: rotate(15deg) scale(1.1);
+            }
+            50% {
+                top: 60%;
+                left: 75%;
+                transform: rotate(30deg) scale(1.2);
+            }
+            75% {
+                top: 80%;
+                left: 40%;
+                transform: rotate(15deg) scale(1.1);
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                top: 105%;
+                left: 105%;
+                transform: rotate(45deg) scale(1);
+                opacity: 0;
+            }
+        }
+        
+        /* Imagen 2: Recorre en zigzag por la pantalla */
+        @keyframes floatAcross2 {
+            0% {
+                top: -10%;
+                right: -10%;
+                transform: rotate(0deg) scale(1);
+                opacity: 0;
+            }
+            15% {
+                opacity: 0.7;
+            }
+            30% {
+                top: 15%;
+                right: 25%;
+                transform: rotate(-20deg) scale(1.15);
+            }
+            50% {
+                top: 50%;
+                right: 60%;
+                transform: rotate(-40deg) scale(1.25);
+            }
+            70% {
+                top: 75%;
+                right: 30%;
+                transform: rotate(-20deg) scale(1.15);
+            }
+            85% {
+                opacity: 0.7;
+            }
+            100% {
+                top: 110%;
+                right: 110%;
+                transform: rotate(-60deg) scale(1);
+                opacity: 0;
+            }
+        }
+        
+        /* Imagen 3: Recorre en forma circular por toda la pantalla */
+        @keyframes floatAcross3 {
+            0% {
+                bottom: -5%;
+                left: 50%;
+                transform: translateX(-50%) rotate(0deg) scale(1);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            25% {
+                bottom: 30%;
+                left: 20%;
+                transform: rotate(90deg) scale(1.2);
+            }
+            50% {
+                bottom: 70%;
+                left: 80%;
+                transform: rotate(180deg) scale(1.3);
+            }
+            75% {
+                bottom: 40%;
+                left: 60%;
+                transform: rotate(270deg) scale(1.2);
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                bottom: 105%;
+                left: 50%;
+                transform: translateX(-50%) rotate(360deg) scale(1);
+                opacity: 0;
+            }
+        }
+        
+        /* Efecto de glow en las esferas de fondo */
+        .glow-sphere {
+            filter: blur(80px);
+            opacity: 0.4;
+            border-radius: 50%;
+        }
+        
+        /* Asegurar que los objetos no interfieran con el login */
+        .login-screen .z-0 {
+            z-index: 0;
+            pointer-events: none;
+        }
+        .login-screen .relative.z-10 {
+            z-index: 10;
+        }
+        
+        /* Responsive: ocultar en móvil */
+        @media (max-width: 1024px) {
+            .floating-1, .floating-2, .floating-3 {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- ============================================ -->
+        <!-- PANTALLA DE LOGIN - CON IMÁGENES FLOTANTES MÁS GRANDES -->
+        <!-- ============================================ -->
+        <div id="loginScreen" class="login-screen">
+            <!-- Efectos de fondo -->
+            <div class="absolute top-1/4 -left-20 w-96 h-96 bg-purple-500 glow-sphere"></div>
+            <div class="absolute bottom-1/4 -right-20 w-80 h-80 bg-blue-500 glow-sphere"></div>
+            
+            <!-- Objeto flotante 1: 1.png - 200px -->
+            <div class="floating-1 z-0">
+                <img alt="Imagen flotante 1" class="w-full h-auto rounded-xl shadow-2xl" src="img/1.png">
+            </div>
+            
+            <!-- Objeto flotante 2: 2.png - 170px -->
+            <div class="floating-2 z-0">
+                <img alt="Imagen flotante 2" class="w-full h-auto rounded-xl shadow-2xl" src="img/2.png">
+            </div>
+            
+            <!-- Objeto flotante 3: 3.png - 140px -->
+            <div class="floating-3 z-0">
+                <img alt="Imagen flotante 3" class="w-full h-auto rounded-xl shadow-2xl" src="img/3.png">
+            </div>
+
+            <!-- Login Container -->
+            <div class="relative z-10 w-full max-w-md mx-auto px-4">
+                <div class="login-brand">
+                    <div class="login-icon-wrapper">
+                        <span class="material-symbols-outlined login-icon">handshake</span>
+                    </div>
+                    <h1 class="login-title">SECOP <span class="highlight">Lite</span></h1>
+                    <p class="login-description">Sistema de Consulta de Contratación Pública</p>
+                </div>
+                
+                <div class="glass-panel">
+                    <div class="text-center mb-6">
+                        <span class="material-symbols-outlined text-purple-400 text-4xl mb-2">account_circle</span>
+                        <h2 class="text-xl font-bold text-white">Acceso al Sistema</h2>
+                        <p class="text-sm text-gray-400">Ingresa tus credenciales para continuar</p>
+                    </div>
+                    
+                    <div class="input-group">
+                        <span class="material-symbols-outlined input-icon">person</span>
+                        <input type="email" id="loginEmail" placeholder="correo@ejemplo.com" value="shoyosb@gmail.com">
+                    </div>
+                    
+                    <div class="input-group">
+                        <span class="material-symbols-outlined input-icon">lock</span>
+                        <input type="password" id="loginPassword" placeholder="Contraseña">
+                        <span class="material-symbols-outlined password-toggle" id="togglePassword">visibility</span>
+                    </div>
+                    
+                    <button id="loginBtn" class="login-btn">
+                        <span class="material-symbols-outlined">login</span>
+                        Ingresar a SECOP Lite
+                    </button>
+                </div>
+                
+                <div class="login-footer">
+                    <p>Sistema de información de contratación pública</p>
+                    <small>SECOP Lite v3.0</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- SISTEMA PRINCIPAL (oculto hasta login) - SIN CAMBIOS -->
+        <!-- ============================================ -->
+        <div id="mainApp" class="main-app hidden">
+            <header class="header">
+                <div class="header-container">
+                    <div class="logo">
+                        <span class="material-symbols-outlined">gavel</span>
+                        <h1>SECOP <span class="highlight">Lite</span></h1>
+                    </div>
+                    <div class="user-info">
+                        <span class="material-symbols-outlined">account_circle</span>
+                        <span id="userEmailDisplay" class="user-email"></span>
+                        <button id="logoutBtn" class="logout-btn">
+                            <span class="material-symbols-outlined">logout</span>
+                            Salir
+                        </button>
+                    </div>
+                    <p class="subtitle">Consulta el Sistema de Compra Pública Colombiana</p>
+                </div>
+            </header>
+
+            <main class="main">
+                <div class="tabs">
+                    <button id="tabSearchBtn" class="tab active">🔍 Búsqueda</button>
+                    <button id="tabFavoritesBtn" class="tab">⭐ Favoritos</button>
+                </div>
+
+                <div id="searchContent">
+                    <div class="search-section">
+                        <div class="search-box">
+                            <span class="material-symbols-outlined search-icon">search</span>
+                            <input type="text" id="searchInput" placeholder="Ej: licitaciones de TI, contratos de alimentación escolar..." class="search-input">
+                            <button id="searchBtn" class="search-btn">Buscar</button>
+                        </div>
+                        
+                        <div class="filter-toggle">
+                            <button id="toggleFiltersBtn" class="toggle-filters-btn">
+                                <span class="material-symbols-outlined">filter_list</span>
+                                Mostrar filtros
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="filtersPanel" class="filters-panel hidden">
+                        <div class="filters-grid">
+                            <div class="filter-group">
+                                <label>Departamento</label>
+                                <select id="departmentFilter">
+                                    <option value="">Todos los departamentos</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>Ciudad</label>
+                                <select id="cityFilter" disabled>
+                                    <option value="">Todas las ciudades</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>Entidad</label>
+                                <input type="text" id="entityFilter" placeholder="Nombre de entidad">
+                            </div>
+                            <div class="filter-group">
+                                <label>Modalidad</label>
+                                <select id="modalityFilter">
+                                    <option value="">Todas las modalidades</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>Fase del Proceso</label>
+                                <select id="phaseFilter">
+                                    <option value="">Todas las fases</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>Estado</label>
+                                <select id="statusFilter">
+                                    <option value="">Todos los estados</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>Fecha desde</label>
+                                <input type="date" id="fromDateFilter">
+                            </div>
+                            <div class="filter-group">
+                                <label>Fecha hasta</label>
+                                <input type="date" id="toDateFilter">
+                            </div>
+                            <div class="filter-group">
+                                <label>Valor mínimo (COP)</label>
+                                <input type="number" id="minValueFilter" placeholder="0">
+                            </div>
+                            <div class="filter-group">
+                                <label>Valor máximo (COP)</label>
+                                <input type="number" id="maxValueFilter" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="filters-actions">
+                            <button id="applyFiltersBtn" class="apply-filters-btn">Aplicar filtros</button>
+                            <button id="clearFiltersBtn" class="clear-filters-btn">Limpiar filtros</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-section">
+                    <div class="results-header">
+                        <h2 id="resultsTitle">Procesos de Contratación</h2>
+                        <div id="resultsCount" class="results-count">0 procesos encontrados</div>
+                    </div>
+
+                    <div class="page-size-selector">
+                        <label for="pageSizeSelect">Mostrar:</label>
+                        <select id="pageSizeSelect">
+                            <option value="5">5 contratos</option>
+                            <option value="10">10 contratos</option>
+                            <option value="25" selected>25 contratos</option>
+                            <option value="50">50 contratos</option>
+                            <option value="100">100 contratos</option>
+                            <option value="200">200 contratos</option>
+                        </select>
+                    </div>
+
+                    <div class="table-container">
+                        <table id="resultsTable" class="results-table">
+                            <thead>
+                                <tr>
+                                    <th>ID / Entidad</th>
+                                    <th>Título</th>
+                                    <th>Cuantía</th>
+                                    <th>Estado</th>
+                                    <th>Fase</th>
+                                    <th>Publicación</th>
+                                    <th>Cierre</th>
+                                    <th>Código UNSPSC</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <tr>
+                                    <td colspan="9" class="empty-state">Realiza una búsqueda para ver resultados</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="pagination" class="pagination"></div>
+                </div>
+
+                <div id="chartsContainer" class="charts-section">
+                    <div class="chart-card">
+                        <h3>📊 Procesos por Modalidad</h3>
+                        <canvas id="modalityChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="footer">
+                <p>Datos de SECOP II - Colombia Compra Eficiente</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- LOADING OVERLAY -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <p>Cargando datos...</p>
+    </div>
+
+    <!-- MODAL DE DETALLES -->
+    <div id="processModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📋 Detalles del Proceso</h2>
+                <button id="closeModalBtn" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer">
+                <button id="modalCloseFooterBtn" class="modal-footer-btn">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SCRIPTS MODULARES -->
+    <!-- ============================================ -->
+    <script src="js/constants.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/favorites.js"></script>
+    <script src="js/filters.js"></script>
+    <script src="js/table.js"></script>
+    <script src="js/modal.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    
+    <script>
+        // Toggle password visibility
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('loginPassword');
+        
+        if (togglePassword && passwordInput) {
+            togglePassword.addEventListener('click', () => {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                togglePassword.textContent = type === 'password' ? 'visibility' : 'visibility_off';
+            });
+        }
+        
+        // Input focus effects
+        const inputs = document.querySelectorAll('#loginEmail, #loginPassword');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.style.borderColor = '#ddb7ff';
+                input.style.boxShadow = '0 0 15px rgba(221, 183, 255, 0.3)';
+            });
+            input.addEventListener('blur', () => {
+                input.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                input.style.boxShadow = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
