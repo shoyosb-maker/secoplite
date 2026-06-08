@@ -1,0 +1,91 @@
+/* ============================================
+   MEDIA QUERIES - RESPONSIVE
+   ============================================ */
+
+/* Mejoras para touch en móvil */
+@media (max-width: 768px) {
+    button, 
+    .tab,
+    .save-btn,
+    .btn-secop-link,
+    .modal-close,
+    .pagination button,
+    .apply-filters-btn,
+    .clear-filters-btn,
+    .toggle-filters-btn {
+        min-height: 44px;
+    }
+    
+    .save-btn {
+        min-height: auto;
+        padding: 0.35rem 0.6rem;
+    }
+    
+    .btn-secop-link {
+        min-height: 36px;
+    }
+    
+    .filter-group select,
+    .filter-group input {
+        min-height: 44px;
+    }
+    
+    .search-input {
+        min-height: 48px;
+    }
+    
+    .search-btn {
+        min-height: 48px;
+    }
+}
+
+/* Pantallas muy pequeñas (menos de 400px) */
+@media (max-width: 400px) {
+    .main {
+        padding: 0.75rem;
+    }
+    
+    .logo h1 {
+        font-size: 1.25rem;
+    }
+    
+    .results-table th,
+    .results-table td {
+        padding: 0.5rem 0.3rem;
+    }
+    
+    .process-title {
+        font-size: 0.7rem;
+    }
+    
+    .process-id,
+    .process-entity {
+        font-size: 0.65rem;
+    }
+    
+    .status-badge,
+    .phase-badge {
+        font-size: 0.6rem;
+        padding: 0.15rem 0.4rem;
+    }
+    
+    .save-btn {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.4rem;
+    }
+}
+
+/* Orientación landscape */
+@media (max-width: 900px) and (orientation: landscape) {
+    .modal-content {
+        max-height: 85vh;
+    }
+    
+    .modal-body {
+        max-height: 60vh;
+    }
+    
+    .results-table {
+        min-width: 800px;
+    }
+}
