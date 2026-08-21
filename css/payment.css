@@ -1,0 +1,287 @@
+/* ============================================
+   PASARELA DE PAGOS - ESTILOS
+   ============================================ */
+
+/* Modal de pagos */
+.payment-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    backdrop-filter: blur(4px);
+}
+
+.payment-modal.hidden {
+    display: none;
+}
+
+.payment-modal-content {
+    background: white;
+    border-radius: 1rem;
+    max-width: 900px;
+    width: 90%;
+    max-height: 85vh;
+    overflow: hidden;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+    animation: modalFadeIn 0.3s ease-out;
+    display: flex;
+    flex-direction: column;
+}
+
+.payment-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #012d1d, #1a472a);
+    color: white;
+}
+
+.payment-modal-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.payment-modal-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.payment-modal-close:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.payment-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+}
+
+.payment-modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e5e7eb;
+    background: #f9fafb;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.payment-footer-btn {
+    background: #6b7280;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
+
+/* Grid de planes */
+.pricing-plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.pricing-plan-card {
+    background: #f9fafb;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    text-align: center;
+    border: 1px solid #e5e7eb;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.pricing-plan-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+}
+
+.pricing-plan-card.current-plan {
+    border: 2px solid #10b981;
+    background: #f0fdf4;
+}
+
+.plan-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+}
+
+.plan-price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #012d1d;
+    margin-bottom: 0.5rem;
+}
+
+.plan-period {
+    font-size: 0.8rem;
+    font-weight: normal;
+    color: #6b7280;
+}
+
+.plan-features {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+    text-align: left;
+}
+
+.plan-features li {
+    padding: 0.25rem 0;
+    font-size: 0.85rem;
+    color: #4b5563;
+}
+
+.plan-select-btn {
+    width: 100%;
+    padding: 0.6rem;
+    background: #012d1d;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.plan-select-btn:hover:not(:disabled) {
+    background: #1a472a;
+}
+
+.plan-select-btn:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}
+
+/* Estado de pago */
+.payment-status {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+}
+
+.payment-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.payment-loading .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #e5e7eb;
+    border-top-color: #012d1d;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.payment-success {
+    background: #d1fae5;
+    color: #065f46;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+}
+
+.success-icon {
+    font-size: 2rem;
+    display: block;
+}
+
+/* Botón de suscripción en header */
+.subscription-btn {
+    background: #f59e0b;
+    color: white;
+    border: none;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.7rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: all 0.2s;
+}
+
+.subscription-btn:hover {
+    background: #d97706;
+}
+
+.subscription-badge {
+    background: #f59e0b;
+    color: white;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 1rem;
+    margin-left: 0.5rem;
+}
+
+/* Resumen de suscripción */
+.subscription-summary {
+    background: white;
+    border-radius: 1rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #e5e7eb;
+}
+
+.summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+.summary-change-btn {
+    background: none;
+    border: none;
+    color: #f59e0b;
+    cursor: pointer;
+    font-size: 0.7rem;
+}
+
+.summary-body {
+    font-size: 0.8rem;
+    color: #4b5563;
+}
+
+.summary-plan {
+    font-weight: 700;
+    color: #012d1d;
+    font-size: 0.9rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+    .pricing-plans-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .payment-modal-content {
+        width: 95%;
+        max-height: 90vh;
+    }
+}

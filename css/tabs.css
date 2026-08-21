@@ -1,0 +1,33 @@
+/* ============================================
+   PESTAÑAS
+   ============================================ */
+
+.tabs {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--gray-200);
+    padding-bottom: 0.5rem;
+    justify-content: center;
+}
+
+.tab {
+    background: none;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 0.5rem;
+}
+
+.tab.active {
+    color: var(--primary);
+    background: var(--primary-lighter);
+}
+
+.tab:active {
+    transform: scale(0.97);
+}
