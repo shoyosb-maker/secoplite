@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de Mejoras - SECOP Lite v4.0</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 0.3rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+
+        .version {
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        /* Barra de progreso */
+        .progress-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+        }
+
+        .progress-bar-container {
+            background: #e5e7eb;
+            border-radius: 1rem;
+            height: 2rem;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            background: #10b981;
+            height: 100%;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.875rem;
+            transition: width 0.3s ease;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .stat {
+            background: #f3f4f6;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat .number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0f172a;
+        }
+
+        .stat .label {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        /* Tarjetas de fase */
+        .phase {
+            background: white;
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        .phase-header {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .phase-header h2 {
+            font-size: 1.25rem;
+        }
+
+        .phase-status {
+            font-size: 0.875rem;
+            background: rgba(255,255,255,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 2rem;
+        }
+
+        .phase-body {
+            padding: 1.5rem;
+            display: none;
+        }
+
+        .phase-body.open {
+            display: block;
+        }
+
+        /* Tabla de tareas */
+        .task-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .task-table th {
+            text-align: left;
+            padding: 0.75rem 0.5rem;
+            background: #f3f4f6;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .task-table td {
+            padding: 0.75rem 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+
+        .task-desc {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+
+        .task-files {
+            font-size: 0.7rem;
+            background: #f3f4f6;
+            padding: 0.2rem 0.5rem;
+            border-radius: 1rem;
+            font-family: monospace;
+            display: inline-block;
+        }
+
+        .badge-pending {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 0.2rem 0.6rem;
+            border-radius: 2rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .badge-done {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 0.2rem 0.6rem;
+            border-radius: 2rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .btn-complete {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .btn-complete:hover {
+            background: #059669;
+        }
+
+        .btn-pending {
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+
+        .btn-reset {
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .btn-reset:hover {
+            background: #4b5563;
+        }
+
+        .footer {
+            text-align: center;
+            color: rgba(255,255,255,0.7);
+            margin-top: 2rem;
+            font-size: 0.875rem;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #10b981;
+        }
+
+        .priority-high {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 0.2rem 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .priority-med {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 0.2rem 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .priority-low {
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 0.2rem 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Plan de Mejoras - SECOP <span class="version">Lite v4.0</span></h1>
+            <p class="badge">Estado: Planificación | Basado en análisis de secop2_licitaciones_v11.html</p>
+        </div>
+
+        <!-- Barra de progreso -->
+        <div class="progress-card">
+            <h3>📊 Progreso General de Implementación</h3>
+            <div class="progress-bar-container">
+                <div id="globalProgressFill" class="progress-fill" style="width: 0%;">0%</div>
+            </div>
+            <div class="stats">
+                <div class="stat">
+                    <div class="number" id="totalTasks">0</div>
+                    <div class="label">Total Tareas</div>
+                </div>
+                <div class="stat">
+                    <div class="number" id="completedTasks">0</div>
+                    <div class="label">Completadas</div>
+                </div>
+                <div class="stat">
+                    <div class="number" id="pendingTasks">0</div>
+                    <div class="label">Pendientes</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FASE 1: Mejora del Filtro Participable -->
+        <div class="phase">
+            <div class="phase-header" onclick="togglePhase(this)">
+                <h2>🔴 FASE 1: Mejora del Filtro "Participable"</h2>
+                <span class="phase-status" id="phase1Status">0/4 completadas</span>
+            </div>
+            <div class="phase-body">
+                <table class="task-table">
+                    <thead>
+                        <tr><th style="width:5%">✅</th><th style="width:40%">Tarea</th><th style="width:35%">Descripción</th><th style="width:10%">Prioridad</th><th style="width:10%">Estado</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr data-task="1.1">
+                            <td><input type="checkbox" class="checkbox" onchange="toggleTask(this, '1.1')"></td>
+                            <td>
+                                <strong>Agregar función isParticipable()</strong>
+                                <div class="task-desc">Función que evalúa: estado="Abierto" + fecha_cierre_futura + sin proveedor asignado + sin adjudicación</div>
+                                <span class="task-files">js/api.js</span>
+                            </td>
+                            <td>Nueva función auxiliar que consolida toda la lógica de participabilidad</td>
+                            <td><span class="priority-high">Alta</span></td>
+                            <td><span class="badge-pending" id="status1.1">Pendiente</span></td>
+                        </tr>
+                        <tr data-task="1.2">
+                            <td><input type="checkbox" class="checkbox" onchange="toggleTask(this, '1.2')"></td>
+                            <td>
+                                <strong>Agregar checkbox en panel de filtros</strong>
+                                <div class="task-desc">"🔴 Mostrar solo procesos donde aún se puede participar"</div>
+                                <span class="task-files">index.htm</span>
+                            </td>
+                            <td>Toggle que activa/desactiva el filtro participable</td>
+                            <td><span class="priority-high">Alta</span></td>
+                            <td><span class="badge-pending" id="status1.2">Pendiente</span></td>
+                        </tr>
+                        <tr data-task="1.3">
+                            <td><input type="checkbox" class="checkbox" onchange="toggleTask(this, '1.3')"></td>
+                            <td>
+                                <strong>Integrar filtro en buildApiUrl()</strong>
+                                <div class="task-desc">Al activar checkbox, agregar condición WHERE a la consulta de API</div>
+                                <span class="task-files">js/api.js</span>
+                            </td>
+                            <td>Filtrar en el origen (API) para reducir resultados</td>
+                            <td><span class="priority-high">Alta</span></td>
+                            <td><span class="badge-pending" id="status1.3">Pendiente</span></td>
+                        </tr>
+                        <tr data-task="1.4">
+                            <td><input type="checkbox" class="checkbox" onchange="toggleTask(this, '1.4')"></td>
+                            <td>
+                                <strong>Agregar indicador visual en tarjeta/tabla</strong>
+                                <div class="task-desc">Mostrar badge "¡Participa!" o "Activo" en procesos participables</div>
+                                <span class="task-files">js/table.js, css/main.css</span>
+                            </td>
+                            <td>Mejorar experiencia visual del usuario</td>
+                            <td><span class="priority-med">Media</span></td>
+                            <td><span class="badge-pending" id="status1.4">Pendiente</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- FASE 2: Mejora del Modal de Detalles -->
+        <div class="phase">
+            <div class="phase-header" onclick="togglePhase(this)">
+                <h2>📋 FASE 2: Mejora del Modal de Detalles</h2>
+                <span class="phase-status" id="phase2Status">0/4 completadas</span>
+            </div>
+            <div class="phase-body">
+                <table class="task-table">
+                    <thead>
+                        <tr><th style="width:5%">✅</th><th style="width:40%">Tarea</th><th style="width:35%">Descripción</th><th style="width:10%">Prioridad</th><th style="width:10%">Estado</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr data-task="2.1">
+                            <td><input type="checkbox" class="checkbox" onchange="toggleTask(this, '2.1')"></td>
+                            <td>
+                                <strong>Usar urlproceso.url específico</strong>
+                                <div class="task-desc">Reemplazar URL genérica de SECOP por la URL específica de cada proceso</div>
+                                <span class="task-files">js/modal.js</span>
+                            </td>
+                            <td>Permite acceder directamente al detalle del proceso en SECOP II</td>
+                            <td><span class="priority-high">Alta</span></td>
+                            <td><span class="badge-pending" id="status2.1">Pendiente</span></td>
+                        </tr>
+                        <tr data-task="2.2">
+                            <td><input type="checkbox" class="checkbox" onchange="toggleTask(this, '2.2')"></td>
+                            <td>
+                                <strong>Mostrar codigoproveedor en modal</strong>
+                                <div class="task-desc">Agregar campo "Proveedor asignado" si existe</div>
+                                <span class="task-files">js/modal.js</span>
+                            </td>
+                            <td>Transparencia sobre si el proceso ya tiene ganador</td>
+                            <td><span class="priority-med">Media</span></td>
+                            <td><span class="badge-pending" id="status2.2">Pendiente</span></td>
+                        </tr>
+                        <tr data-task="2.3">
+                            <td><input type="checkbox" class="checkbox" onchange="toggleTask(this, '2.3')"></td>
+                            <td>
+                                <strong>Mostrar id_adjudicacion en modal</strong>
+                                <div class="task-desc">Agregar campo "ID de adjudicación" si existe</div>
+                                <span class="task-files">js/modal.js</span>
+                            </td>
+                            <td>Información adicional sobre el estado del proceso</td>
+                            <td><span class="priority-med">Media</span></td>
+                            <td><span class="badge-pending" id="status2.3">Pendiente</span></td>
+                        </tr>
+                        <tr data-task="2.4">
+                            <td><input type="checkbox" class="checkbox" onchange="toggleTask(this, '2.4')"></td>
+                            <td>
+                                <strong>Mejorar diseño del modal</strong>
+                                <div class="task-desc">Organizar información en columnas, más legible</div>
+                                <span class="task-files">css/main.css, js/modal.js</span>
+                            </td>
+                            <td>Mejor experiencia de usuario</td>
+                            <td><span class="priority-low">Baja</span></td>
+                            <td><span class="badge-pending" id="status2.4">Pendiente</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- FASE 3: Nuevas Funcionalidades -->
+        <div class="phase">
+            <div class="phase-header" onclick="togglePhase(this)">
+                <h2>✨ FASE 3: Nuevas Funcionalidades</h2>
+                <span class="phase-status" id="phase3Status">0/4 completadas</span>
+            </div>
+            <div class="phase-body">
+                <table class="task-table">
+                    <thead>
+                        <tr><th style="width:5%">✅</th><th style="width:40%">Tarea</th><th style="width:35%">Descripción</th><th style="width:10%">Prioridad</th><th style="width:10%">Estado</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr data-task="3.1">
+                            <td><input type="checkbox" class="checkbox" onchange="toggleTask(this, '3.1')"></td>
+                            <td>
+                                <strong>Agregar métricas en resultados</strong>
+                                <div class="task-desc">Mostrar: Total encontrados, Entidades distintas, Valor total estimado</div>
+                                <span class="task-files">js/api.js, index.htm</span>
+                            </td>
+                            <td>Información resumida de la consulta</td>
+                            <td><span class="priority-med">Media</span></td>
+                            <td><span class="badge-pending" id="status3.1">Pendiente</span></td>
+                        </tr>
+                        <tr data-task="3.2">
+                            <td><input type="checkbox" class="checkbox" onchange="toggleTask(this, '3.2')"></td>
+                            <td>
+                                <strong>Filtro por categorías UNSPSC</strong>
+                                <div class="task-desc">Multiselect basado en códigos UNSPSC</div>
+                                <span class="task-files">index.htm, js/filters.js</span>
+                            </td>
+                            <td>Filtrar por tipo de producto/servicio</td>
+                            <td><span class="priority-low">Baja</span></td>
+                            <td><span class="badge-pending" id="status3.2">Pendiente</span></td>
+                        </tr>
+                        <tr data-task="3.3">
+                            <td><input type="checkbox" class="checkbox" onchange="toggleTask(this, '3.3')"></td>
+                            <td>
+                                <strong>Vista de tarjetas (cards)</strong>
+                                <div class="task-desc">Alternativa visual a la tabla actual</div>
+                                <span class="task-files">index.htm, js/table.js, css/main.css</span>
+                            </td>
+                            <td>Diseño más moderno y móvil-amigable</td>
+                            <td><span class="priority-low">Baja</span></td>
+                            <td><span class="badge-pending" id="status3.3">Pendiente</span></td>
+                        </tr>
+                        <tr data-task="3.4">
+                            <td><input type="checkbox" class="checkbox" onchange="toggleTask(this, '3.4')"></td>
+                            <td>
+                                <strong>Tooltip con resumen de participabilidad</strong>
+                                <div class="task-desc">Al hacer hover sobre un proceso, mostrar por qué es/no es participable</div>
+                                <span class="task-files">js/table.js, css/main.css</span>
+                            </td>
+                            <td>Educar al usuario sobre los criterios</td>
+                            <td><span class="priority-low">Baja</span></td>
+                            <td><span class="badge-pending" id="status3.4">Pendiente</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Botón de reinicio -->
+        <button class="btn-reset" onclick="resetAllTasks()">🔄 Reiniciar todas las tareas</button>
+
+        <div class="footer">
+            <p>Plan de Mejoras SECOP Lite v4.0 | Basado en análisis de secop2_licitaciones_v11.html</p>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'secop_plan_mejoras';
+
+        function togglePhase(header) {
+            const body = header.nextElementSibling;
+            body.classList.toggle('open');
+        }
+
+        function toggleTask(checkbox, taskId) {
+            const isChecked = checkbox.checked;
+            saveTaskState(taskId, isChecked);
+            updateTaskStatus(taskId, isChecked);
+            updateAllProgress();
+        }
+
+        function saveTaskState(taskId, isChecked) {
+            let tasks = getStoredTasks();
+            tasks[taskId] = isChecked;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+        }
+
+        function getStoredTasks() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try {
+                    return JSON.parse(stored);
+                } catch(e) {
+                    return {};
+                }
+            }
+            return {};
+        }
+
+        function updateTaskStatus(taskId, isChecked) {
+            const statusSpan = document.getElementById(`status${taskId}`);
+            if (statusSpan) {
+                statusSpan.textContent = isChecked ? 'Completada' : 'Pendiente';
+                statusSpan.className = isChecked ? 'badge-done' : 'badge-pending';
+            }
+        }
+
+        function loadTasksFromStorage() {
+            const tasks = getStoredTasks();
+            
+            document.querySelectorAll('.checkbox').forEach(checkbox => {
+                const taskRow = checkbox.closest('tr');
+                const taskId = taskRow ? taskRow.getAttribute('data-task') : null;
+                if (taskId && tasks[taskId] === true) {
+                    checkbox.checked = true;
+                    updateTaskStatus(taskId, true);
+                }
+            });
+        }
+
+        function updatePhaseProgress(phaseId, statusId) {
+            const phaseContainer = document.getElementById(phaseId);
+            if (!phaseContainer) return;
+            
+            const checkboxes = phaseContainer.querySelectorAll('.checkbox');
+            const total = checkboxes.length;
+            let completed = 0;
+            
+            checkboxes.forEach(cb => {
+                if (cb.checked) completed++;
+            });
+            
+            const statusSpan = document.getElementById(statusId);
+            if (statusSpan) {
+                statusSpan.textContent = `${completed}/${total} completadas`;
+            }
+            
+            return { total, completed };
+        }
+
+        function updateGlobalProgress() {
+            const allCheckboxes = document.querySelectorAll('.checkbox');
+            const total = allCheckboxes.length;
+            let completed = 0;
+            
+            allCheckboxes.forEach(cb => {
+                if (cb.checked) completed++;
+            });
+            
+            const pending = total - completed;
+            const percentage = total === 0 ? 0 : Math.round((completed / total) * 100);
+            
+            document.getElementById('totalTasks').textContent = total;
+            document.getElementById('completedTasks').textContent = completed;
+            document.getElementById('pendingTasks').textContent = pending;
+            
+            const progressFill = document.getElementById('globalProgressFill');
+            if (progressFill) {
+                progressFill.style.width = `${percentage}%`;
+                progressFill.textContent = `${percentage}%`;
+            }
+        }
+
+        function updateAllProgress() {
+            updatePhaseProgress('phase1Tasks', 'phase1Status');
+            updatePhaseProgress('phase2Tasks', 'phase2Status');
+            updatePhaseProgress('phase3Tasks', 'phase3Status');
+            updateGlobalProgress();
+        }
+
+        function resetAllTasks() {
+            if (confirm('¿Estás seguro de que quieres reiniciar todas las tareas? Se perderá el progreso guardado.')) {
+                localStorage.removeItem(STORAGE_KEY);
+                document.querySelectorAll('.checkbox').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                // Resetear todos los badges
+                document.querySelectorAll('[id^="status"]').forEach(span => {
+                    span.textContent = 'Pendiente';
+                    span.className = 'badge-pending';
+                });
+                updateAllProgress();
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTasksFromStorage();
+            updateAllProgress();
+            
+            // Abrir todas las fases por defecto
+            document.querySelectorAll('.phase-body').forEach(body => {
+                body.classList.add('open');
+            });
+        });
+    </script>
+</body>
+</html>
