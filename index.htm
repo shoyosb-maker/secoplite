@@ -5,6 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>SECOP Lite - Contratación Pública de Colombia</title>
     
+    <!-- ========== SEO ========== -->
+    <meta name="description" content="Consulta procesos de contratación pública de Colombia en tiempo real. Filtra por entidad, modalidad, ubicación y encuentra oportunidades vigentes.">
+    <meta name="keywords" content="SECOP, contratación pública, Colombia, licitaciones, procesos, oportunidades">
+    <meta name="author" content="SECOP Lite">
+    
+    <!-- ========== OPEN GRAPH (WhatsApp, Facebook, LinkedIn) ========== -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tudominio.com/">
+    <meta property="og:title" content="SECOP Lite - Consulta Contratación Pública">
+    <meta property="og:description" content="Consulta procesos de contratación pública de Colombia en tiempo real. Encuentra oportunidades vigentes donde aún puedes participar.">
+    <meta property="og:image" content="https://tudominio.com/img/preview.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="SECOP Lite - Sistema de Consulta de Contratación Pública">
+    <meta property="og:site_name" content="SECOP Lite">
+    <meta property="og:locale" content="es_CO">
+    
+    <!-- ========== TWITTER CARD ========== -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SECOP Lite - Consulta Contratación Pública">
+    <meta name="twitter:description" content="Consulta procesos de contratación pública de Colombia en tiempo real.">
+    <meta name="twitter:image" content="https://tudominio.com/img/preview.jpg">
+    
+    <!-- ========== FAVICON ========== -->
+    <link rel="icon" type="image/png" href="img/favicon.png">
+    
     <!-- ========== ESTILOS MODULARES PROPIOS ========== -->
     <link rel="stylesheet" href="css/main.css">
     
@@ -494,7 +520,7 @@
                                     <button onclick="loadUnspcOptions()" class="unspc-reload">🔄</button>
                                 </div>
                                 
-                                <!-- 🔍 NUEVO: Buscador de códigos -->
+                                <!-- 🔍 Buscador de códigos UNSPSC -->
                                 <div class="unspc-search-row">
                                     <input type="text" id="unspcSearch" class="unspc-search-input" placeholder="🔍 Buscar código..." oninput="filterUnspcOptions()">
                                     <span id="unspcSearchCount" class="unspc-search-count"></span>
@@ -766,13 +792,9 @@
                     return;
                 }
                 
-                // Guardar lista completa en variable global para filtrar
                 window.allUnspcCodes = unspcList;
                 
-                // Renderizar todas las opciones
                 renderUnspcList(unspcList);
-                
-                // Actualizar contador
                 updateUnspcCounter(unspcList.length, unspcList.length);
                 
             } catch (error) {
@@ -791,7 +813,6 @@
                 return;
             }
             
-            // Obtener códigos ya seleccionados para mantener el estado
             const selectedCodes = new Set();
             document.querySelectorAll('#unspc-filter input[type="checkbox"]:checked').forEach(cb => {
                 selectedCodes.add(cb.value);
@@ -819,10 +840,7 @@
                 );
             }
             
-            // Renderizar resultados filtrados
             renderUnspcList(filtered);
-            
-            // Actualizar contador
             updateUnspcCounter(filtered.length, window.allUnspcCodes.length);
         }
         
@@ -844,17 +862,14 @@
         }
         
         function selectAllUnspc() {
-            // Seleccionar solo los visibles (respetando el filtro actual)
             document.querySelectorAll('#unspc-filter input[type="checkbox"]').forEach(cb => cb.checked = true);
             performSearch();
         }
         
         function clearUnspc() {
             document.querySelectorAll('#unspc-filter input[type="checkbox"]').forEach(cb => cb.checked = false);
-            // Limpiar también el buscador
             const searchInput = document.getElementById('unspcSearch');
             if (searchInput) searchInput.value = '';
-            // Restaurar lista completa
             if (window.allUnspcCodes && window.allUnspcCodes.length > 0) {
                 renderUnspcList(window.allUnspcCodes);
                 updateUnspcCounter(window.allUnspcCodes.length, window.allUnspcCodes.length);
@@ -872,13 +887,9 @@
                 viewToggle.addEventListener('change', toggleView);
             }
             
-            // Configurar hover warning para límite alto
             setupLimitHoverWarning();
-            
-            // Cargar opciones UNSPSC
             loadUnspcOptions();
             
-            // Inicializar UI de pagos
             if (typeof initPaymentUI === 'function') {
                 initPaymentUI();
             }
